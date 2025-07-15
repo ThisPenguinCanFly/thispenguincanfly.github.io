@@ -1,115 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Portfolio</title>
-    <style>
-        :root {
-            --main-red:#BA0425;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>thispenguincanfly</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #d32f2f, #b71c1c);
+      overflow: hidden; /* Hide scrollbars due to canvas */
+      position: relative; /* For positioning canvas */
+    }
 
-        header {
-            background-color: var(--main-red);
-            color: #fff;
-            text-align: center;
-            padding: 1em 0;
-        }
+    /* Canvas for particles */
+    #particle-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* Behind content */
+    }
 
-        header h1 {
-            margin: 0;
-        }
+    /* Content wrapper to ensure text is above canvas */
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px; /* Add some padding */
+      text-align: center;
+    }
 
-        nav {
-            text-align: center;
-            margin-top: 10px;
-        }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-        nav a {
-            text-decoration: none;
-            color: #333;
-            margin: 0 15px;
-            font-weight: bold;
-        }
+    h1 svg {
+      width: 48px;
+      height: 48px;
+      fill: currentColor; /* Use current text color for SVG */
+    }
 
-        section {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
+    a {
+      display: inline-block;
+      margin: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: rgba(255, 255, 255, 0.13); /* More subtle transparency */
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.3s, transform 0.2s; /* Add transform for subtle hover */
+      border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle white border */
+      backdrop-filter: blur(2px); /* Glassmorphism effect */
+    }
 
-        section h2 {
-            color: #333;
-        }
+    a:hover {
+      background-color: rgba(255, 255, 255, 0.25); /* Increased transparency on hover */
+      transform: translateY(-2px); /* Lift effect */
+    }
 
-        .project {
-            margin-bottom: 20px;
-        }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+        gap: 10px;
+      }
+      h1 svg {
+        width: 40px;
+        height: 40px;
+      }
+      a {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
 
-        footer {
-            text-align: center;
-            padding: 10px 0;
-            background-color: var(--main-red);
-            color: #fff;
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            color: white;
-        }
-        #myPDFc{
-        }
-        #myPDF{
-            width: 100%;
-            height: 450px;
-        }
-    </style>
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+        flex-direction: column; /* Stack icon and text on small screens */
+        gap: 5px;
+      }
+      h1 svg {
+        width: 32px;
+        height: 32px;
+      }
+      .content-wrapper {
+        padding: 10px;
+      }
+      a {
+        margin: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Matej Rupnik</h1>
-        <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <nav>
-            <!-- <a href="#projects">Projects</a>
-            <!-- <a href="#contact">Contact</a> -->
-            
-        </nav>
-    </header>
-    <section id="myPDFc">
-        <iframe id="myPDF" src="Seminarska.pdf" frameborder=""></iframe>
-    </section>
-<!--
-    <section id="projects">
-        <h2>Projects</h2>
-        <div class="project">
-            <h3>Project 1</h3>
-            <p>Description of Project 1.</p>
-        </div>
-        <div class="project">
-            <h3>Project 2</h3>
-            <p>Description of Project 2.</p>
-        </div>
-        Add more projects as needed 
-    </section> 
-    -->
+  <canvas id="particle-canvas"></canvas>
 
-    <!--<section id="contact">
-        <h2>Contact</h2>
-        <p>You can reach me at: matej.rupnik@protonmail.com</p>
-    </section>-->
+  <div class="content-wrapper">
+    <h1>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.804 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.093 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+      </svg>
+      ThisPenguinCanFly
+    </h1>
+    <a href="https://thispenguincanfly.github.io/merkopanpressarchive">Merkopan Press Archives</a>
+    <a href="#">?</a>
+  </div>
 
-    <footer>
-        <p>&copy; 2023 Matej Rupnik. All rights reserved.</p>
-    </footer>
+  <script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    const numParticles = 50; // Number of particles
+    const particleSpeed = 0.2; // How fast particles move upwards
+
+    // Set canvas size to fill window
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    // Particle constructor
+    function Particle() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 3 + 1; // Size between 1 and 4
+      this.opacity = Math.random() * 0.5 + 0.2; // Opacity between 0.2 and 0.7
+    }
+
+    // Initialize particles
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    // Draw particles
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    // Update particle positions
+    function updateParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.y -= particleSpeed; // Move upwards
+
+        // If particle goes off screen, reset to bottom
+        if (p.y < -p.size) {
+          p.y = canvas.height + p.size;
+          p.x = Math.random() * canvas.width; // New random x position
+        }
+      }
+    }
+
+    // Animation loop
+    function animate() {
+      updateParticles();
+      drawParticles();
+      requestAnimationFrame(animate);
+    }
+
+    // Event listeners
+    window.addEventListener('resize', resizeCanvas);
+
+    // Start everything
+    resizeCanvas();
+    initParticles();
+    animate();
+  </script>
 </body>
 </html>
